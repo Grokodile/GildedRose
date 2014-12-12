@@ -39,6 +39,13 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AgedBrieDecorator.cs" />
+    <Compile Include="BackstagePassDecorator.cs" />
+    <Compile Include="ConjuredDecorator.cs" />
+    <Compile Include="DefaultDecorator.cs" />
+    <Compile Include="ItemDecoratorBase.cs" />
+    <Compile Include="ItemDecoratorFactory.cs" />
+    <Compile Include="LegendaryDecorator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -27,7 +27,7 @@ namespace GildedRose.Tests
             }
 
             System.Console.SetOut(writer);
-            Program.Main(null);
+            Program.Main(new[] { "200", "FeatureType.Conjured == false" });
             writer.Close();
 
             using (var legacy = File.OpenText(@"CharacterisationTest\legacy.txt"))
@@ -35,7 +35,7 @@ namespace GildedRose.Tests
             {
                 while (legacy.Peek() != -1)
                 {
-                    Assert.That(now.ReadLine(),Is.EqualTo(legacy.ReadLine()));
+                    Assert.That(now.ReadLine(), Is.EqualTo(legacy.ReadLine()));
                 }
             }
 
