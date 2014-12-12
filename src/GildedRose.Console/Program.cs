@@ -42,76 +42,8 @@ namespace GildedRose.Console
         {
             foreach (var item in Items)
             {
-                bool isAgedBrie = item.Name == "Aged Brie";
-                bool isBackstagePass = item.Name == "Backstage passes to a TAFKAL80ETC concert";
-                bool isSulfuras = item.Name == "Sulfuras, Hand of Ragnaros";
-
-                if (isAgedBrie || isBackstagePass || isSulfuras)
-                {
-                    if (item.Quality < 50)
-                    {
-                        item.Quality = item.Quality + 1;
-
-                        if (isBackstagePass)
-                        {
-                            if (item.SellIn < 11)
-                            {
-                                if (item.Quality < 50)
-                                {
-                                    item.Quality = item.Quality + 1;
-                                }
-                            }
-
-                            if (item.SellIn < 6)
-                            {
-                                if (item.Quality < 50)
-                                {
-                                    item.Quality = item.Quality + 1;
-                                }
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    if (item.Quality > 0)
-                    {
-                        item.Quality = item.Quality - 1;
-                    }
-                }
-
-                if (!isSulfuras)
-                {
-                    item.SellIn = item.SellIn - 1;
-                }
-
-                if (item.SellIn < 0)
-                {
-                    if (!isAgedBrie)
-                    {
-                        if (!isBackstagePass)
-                        {
-                            if (item.Quality > 0)
-                            {
-                                if (!isSulfuras)
-                                {
-                                    item.Quality = item.Quality - 1;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            item.Quality = item.Quality - item.Quality;
-                        }
-                    }
-                    else
-                    {
-                        if (item.Quality < 50)
-                        {
-                            item.Quality = item.Quality + 1;
-                        }
-                    }
-                }
+                var adapter = ItemDecoratorFactory.Create(item);
+                adapter.UpdateQuality();
             }
         }
     }
@@ -123,6 +55,367 @@ namespace GildedRose.Console
         public int SellIn { get; set; }
 
         public int Quality { get; set; }
+    }
+
+    public abstract class ItemDecorator
+    {
+        private readonly Item _item;
+        protected ItemDecorator(Item item)
+        {
+            _item = item;
+        }
+
+        public abstract void UpdateQuality();
+
+        public string Name
+        {
+            get { return _item.Name; }
+        }
+
+        public int SellIn
+        {
+            get { return _item.SellIn; }
+            set { _item.SellIn = value; }
+        }
+
+        public int Quality
+        {
+            get { return _item.Quality; }
+            set { _item.Quality = value; }
+        }
+
+        public Item Item { get { return _item; } }
+    }
+
+    public class AgedBrieDecorator : ItemDecorator
+    {
+        private bool isAgedBrie = true;
+        private bool isBackstagePass = false;
+        private bool isSulfuras = false;
+
+        public AgedBrieDecorator(Item item)
+            : base(item)
+        {
+        }
+
+        public override void UpdateQuality()
+        {
+            if (isAgedBrie || isBackstagePass || isSulfuras)
+            {
+                if (Quality < 50)
+                {
+                    Quality = Quality + 1;
+
+                    if (isBackstagePass)
+                    {
+                        if (SellIn < 11)
+                        {
+                            if (Quality < 50)
+                            {
+                                Quality = Quality + 1;
+                            }
+                        }
+
+                        if (SellIn < 6)
+                        {
+                            if (Quality < 50)
+                            {
+                                Quality = Quality + 1;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (Quality > 0)
+                {
+                    Quality = Quality - 1;
+                }
+            }
+
+            if (!isSulfuras)
+            {
+                SellIn = SellIn - 1;
+            }
+
+            if (SellIn >= 0) return;
+
+            if (isAgedBrie)
+            {
+                if (Quality < 50)
+                {
+                    Quality = Quality + 1;
+                }
+            }
+            else
+            {
+                if (isBackstagePass)
+                {
+                    Quality = Quality - Quality;
+                }
+                else
+                {
+                    if (Quality > 0 && !isSulfuras)
+                    {
+                        Quality = Quality - 1;
+                    }
+                }
+            }
+        }
+    }
+    
+    public class BackstagePassDecorator : ItemDecorator
+    {
+        private bool isAgedBrie = false;
+        private bool isBackstagePass = true;
+        private bool isSulfuras = false;
+
+        public BackstagePassDecorator(Item item)
+            : base(item)
+        {
+        }
+
+        public override void UpdateQuality()
+        {
+            if (isAgedBrie || isBackstagePass || isSulfuras)
+            {
+                if (Quality < 50)
+                {
+                    Quality = Quality + 1;
+
+                    if (isBackstagePass)
+                    {
+                        if (SellIn < 11)
+                        {
+                            if (Quality < 50)
+                            {
+                                Quality = Quality + 1;
+                            }
+                        }
+
+                        if (SellIn < 6)
+                        {
+                            if (Quality < 50)
+                            {
+                                Quality = Quality + 1;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (Quality > 0)
+                {
+                    Quality = Quality - 1;
+                }
+            }
+
+            if (!isSulfuras)
+            {
+                SellIn = SellIn - 1;
+            }
+
+            if (SellIn >= 0) return;
+
+            if (isAgedBrie)
+            {
+                if (Quality < 50)
+                {
+                    Quality = Quality + 1;
+                }
+            }
+            else
+            {
+                if (isBackstagePass)
+                {
+                    Quality = Quality - Quality;
+                }
+                else
+                {
+                    if (Quality > 0 && !isSulfuras)
+                    {
+                        Quality = Quality - 1;
+                    }
+                }
+            }
+        }
+    }
+    
+    public class SulfurasDecorator : ItemDecorator
+    {
+        private bool isAgedBrie = true;
+        private bool isBackstagePass = false;
+        private bool isSulfuras = true;
+
+        public SulfurasDecorator(Item item)
+            : base(item)
+        {
+        }
+
+        public override void UpdateQuality()
+        {
+            if (isAgedBrie || isBackstagePass || isSulfuras)
+            {
+                if (Quality < 50)
+                {
+                    Quality = Quality + 1;
+
+                    if (isBackstagePass)
+                    {
+                        if (SellIn < 11)
+                        {
+                            if (Quality < 50)
+                            {
+                                Quality = Quality + 1;
+                            }
+                        }
+
+                        if (SellIn < 6)
+                        {
+                            if (Quality < 50)
+                            {
+                                Quality = Quality + 1;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (Quality > 0)
+                {
+                    Quality = Quality - 1;
+                }
+            }
+
+            if (!isSulfuras)
+            {
+                SellIn = SellIn - 1;
+            }
+
+            if (SellIn >= 0) return;
+
+            if (isAgedBrie)
+            {
+                if (Quality < 50)
+                {
+                    Quality = Quality + 1;
+                }
+            }
+            else
+            {
+                if (isBackstagePass)
+                {
+                    Quality = Quality - Quality;
+                }
+                else
+                {
+                    if (Quality > 0 && !isSulfuras)
+                    {
+                        Quality = Quality - 1;
+                    }
+                }
+            }
+        }
+    }
+
+    public class DefaultDecorator : ItemDecorator
+    {
+        private bool isAgedBrie = false;
+        private bool isBackstagePass = false;
+        private bool isSulfuras = false;
+
+        public DefaultDecorator(Item item) : base(item)
+        {
+            
+        }
+
+        public override void UpdateQuality()
+        {
+            if (isAgedBrie || isBackstagePass || isSulfuras)
+            {
+                if (Quality < 50)
+                {
+                    Quality = Quality + 1;
+
+                    if (isBackstagePass)
+                    {
+                        if (SellIn < 11)
+                        {
+                            if (Quality < 50)
+                            {
+                                Quality = Quality + 1;
+                            }
+                        }
+
+                        if (SellIn < 6)
+                        {
+                            if (Quality < 50)
+                            {
+                                Quality = Quality + 1;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (Quality > 0)
+                {
+                    Quality = Quality - 1;
+                }
+            }
+
+            if (!isSulfuras)
+            {
+                SellIn = SellIn - 1;
+            }
+
+            if (SellIn >= 0) return;
+
+            if (isAgedBrie)
+            {
+                if (Quality < 50)
+                {
+                    Quality = Quality + 1;
+                }
+            }
+            else
+            {
+                if (isBackstagePass)
+                {
+                    Quality = Quality - Quality;
+                }
+                else
+                {
+                    if (Quality > 0 && !isSulfuras)
+                    {
+                        Quality = Quality - 1;
+                    }
+                }
+            }
+        }
+    }
+
+    public static class ItemDecoratorFactory
+    {
+        public static ItemDecorator Create(Item item)
+        {
+            switch (item.Name)
+            {
+                case "Aged Brie":
+                    return new AgedBrieDecorator(item);
+                case "Backstage passes to a TAFKAL80ETC concert":
+                    return new BackstagePassDecorator(item);
+                case "Sulfuras, Hand of Ragnaros":
+                    return new SulfurasDecorator(item);
+                default:
+                    return new DefaultDecorator(item);
+
+            }
+        }
     }
 
 }
