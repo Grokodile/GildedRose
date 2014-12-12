@@ -9,12 +9,6 @@ namespace GildedRose.Tests
     public class TestAssemblyTests
     {
         [Test]
-        public void TestTheTruth()
-        {
-            Assert.IsTrue(true);
-        }
-
-        [Test]
         public void CharacterisationTest()
         {
             StreamWriter writer;
