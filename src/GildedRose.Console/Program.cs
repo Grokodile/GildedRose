@@ -2,10 +2,10 @@
 
 namespace GildedRose.Console
 {
-    class Program
+    public class Program
     {
         IList<Item> Items;
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             System.Console.WriteLine("OMGHAI!");
 
@@ -28,10 +28,14 @@ namespace GildedRose.Console
 
                           };
 
-            app.UpdateQuality();
-
-            System.Console.ReadKey();
-
+            for (int i = 0; i < 200; i++)
+            {
+                app.UpdateQuality();
+                foreach (var item in app.Items)
+                {
+                    System.Console.WriteLine("Name: {0}, SellIn: {1}, Quality: {2}", item.Name, item.SellIn, item.Quality);
+                }
+            }
         }
 
         public void UpdateQuality()
